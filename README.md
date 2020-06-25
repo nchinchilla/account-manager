@@ -34,7 +34,7 @@ Running the API There is two alternatives, both depend maven.
 
 From Spring Boot Maven plugin $ mvn spring-boot:run
 
-From Java (it requires Spring Boot Maven plugin to create an executable jar) $ java -jar target/hello-services-1.0-SNAPSHOT.jar
+From Java (it requires Spring Boot Maven plugin to create an executable jar) $ java -jar target/accounts-manager-1.0-SNAPSHOT.jar
 
 From Docker Desktop
 
