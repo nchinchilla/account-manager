@@ -41,6 +41,10 @@ From Docker Desktop
 Build an image docker build -t proj:account-manager
 run container docker run -p 8080:8080 proj:account-manager
 
+Herouku
+
+account-manager are deployed in Heroku the namespace are https://tecso-account-manager.herokuapp.com/
+
 
 Extra Information
 
