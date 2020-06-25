@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +28,6 @@ import static com.tecso.enums.LimitType.*;
 @Slf4j
 public class TransactionServiceImpl implements TransactionService {
 
-
-    @Autowired
-    AccountService accountService;
 
     @Autowired
     AccountRepository accountRepository;
@@ -43,7 +42,7 @@ public class TransactionServiceImpl implements TransactionService {
         log.info("Creating a new transaction for a account number: {}", transactionRequestDTO);
 
         try {
-            Optional<Account> accountResponse = accountService.getAccount(transactionRequestDTO.getAccountNumber());
+            Optional<Account> accountResponse = accountRepository.findById(transactionRequestDTO.getAccountNumber());
 
             if (accountResponse.isPresent()) {
                 Account account = accountResponse.get();
@@ -55,7 +54,7 @@ public class TransactionServiceImpl implements TransactionService {
                     try {
                         account.setBalance(updateBalance(account.getBalance(), transactionRequestDTO.getAmount(), transactionRequestDTO.getTransactionType()));
                         transaction.setDescription(transactionRequestDTO.getDescription());
-                        transaction.setAmount(transactionRequestDTO.getAmount());
+                        transaction.setAmount(round(transactionRequestDTO.getAmount(),2));
                         transaction.setTransactionType(transactionRequestDTO.getTransactionType());
                         transaction.setDate(transactionRequestDTO.getDate());
                         transactionList.add(transaction);
@@ -99,14 +98,22 @@ public class TransactionServiceImpl implements TransactionService {
     private Double updateBalance(Double currentBalance, Double amount, TransactionType transactionType ){
 
         log.info("Account-manager: checkLimit currentBalance - {}, amount {}, transactionType {}",currentBalance, amount, transactionType);
-
+        Double balance;
         switch(transactionType){
             case DEBIT:
-                return currentBalance - amount;
+                balance = currentBalance - amount;
+                return round(balance,2);
             case CREDIT:
-                return currentBalance + amount;
+                balance = currentBalance + amount;
+                return round(balance,2);
             default:
                 return 0.00;
         }
+    }
+
+    public static Double round(Double d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Double.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.doubleValue();
     }
 }

@@ -32,5 +32,6 @@ public class Account {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="account_number", nullable=false)
+    @OrderBy("date DESC")
     private List<Transaction> transaction;
 }

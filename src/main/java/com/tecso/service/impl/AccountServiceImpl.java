@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 @Slf4j
 public class AccountServiceImpl implements AccountService {
@@ -56,16 +57,19 @@ public class AccountServiceImpl implements AccountService {
 
         log.info("Deleting account, request data: {}", accountNumber);
         try{
-            Account account = accountRepository.findById(accountNumber).orElse(null);
+            Account account = accountRepository.findById(accountNumber).orElseThrow(()-> new AccountNotFoundException());
 
             if (account != null && account.getTransaction().size() <= 0) {
                 accountRepository.deleteById(accountNumber);
                 accountDTO = new AccountDTO(accountNumber, null, null, "DELETE ACCOUNT SUCCESSFULLY");
             } else{
-                accountDTO = new AccountDTO(accountNumber, null, null, "DELETE REJECTED");
+                throw new AccountException("Error trying to delete an account");
             }
 
             return accountDTO;
+        }catch (AccountNotFoundException e){
+            log.info("Account-Manager: Error in deleteAccount: {}", e.getMessage());
+            throw new AccountNotFoundException();
         }catch (Exception e){
             log.info("Account-Manager: Error in deleteAccount: {}", e.getMessage());
             throw new AccountException("Error trying to delete an account");
@@ -101,6 +105,7 @@ public class AccountServiceImpl implements AccountService {
         try{
             log.info("Getting information for accountNumber: {}", accountNumber);
             Optional<Account> response = accountRepository.findById(accountNumber);
+
             return response;
         }catch (Exception e){
             log.info("Account-Manager: Error in getAccount: {}", e.getMessage());
