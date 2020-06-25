@@ -1,6 +1,6 @@
-README.md
-Getting Started
-
+ACCOUNT MANAGER
+							
+							
 API Rest for manage accounts and transaction. It provides four endpoints:
 
 One to insert a new account, another to delete this account if this not have transaction associated.
