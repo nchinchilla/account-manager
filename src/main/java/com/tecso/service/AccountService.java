@@ -13,11 +13,12 @@ public interface AccountService {
 
     public AccountDTO deleteAccount(String accountNumber);
 
-    public List<Account> listAccount(String accountNumber);
+    public List<Account> listAccount();
 
     public Optional<Account> getAccount(String accountNumber);
 
     public Boolean isAccountNumberIsAlreadyInUse(String accountNumber);
 
+    public Account listAccountByAccountNumber(String accountNumber);
 
 }

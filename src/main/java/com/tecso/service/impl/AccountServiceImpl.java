@@ -3,6 +3,7 @@ package com.tecso.service.impl;
 import com.tecso.exception.AccountException;
 import com.tecso.exception.AccountNotCreatedException;
 import com.tecso.dto.AccountDTO;
+import com.tecso.exception.AccountNotFoundException;
 import com.tecso.repository.AccountRepository;
 import com.tecso.entity.Account;
 import com.tecso.service.AccountService;
@@ -72,10 +73,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> listAccount(String accountNumber) {
+    public List<Account> listAccount() {
         List<Account> accountList = new ArrayList<>();
         try{
-            log.info("list of accountNumber: {}", accountNumber);
+            log.info("list account");
             accountList = accountRepository.findAll();
             return accountList;
         }catch (Exception e){
@@ -85,12 +86,21 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Account listAccountByAccountNumber(String accountNumber) {
+        AccountDTO accountDTO = new AccountDTO();
+
+        log.info("Getting information for accountNumber: {}", accountNumber);
+        Optional<Account> response = accountRepository.findById(accountNumber);
+
+        return response.orElseThrow(()-> new AccountNotFoundException("Account not exists"));
+
+    }
+
+    @Override
     public Optional<Account> getAccount(String accountNumber) {
         try{
             log.info("Getting information for accountNumber: {}", accountNumber);
-
             Optional<Account> response = accountRepository.findById(accountNumber);
-
             return response;
         }catch (Exception e){
             log.info("Account-Manager: Error in getAccount: {}", e.getMessage());

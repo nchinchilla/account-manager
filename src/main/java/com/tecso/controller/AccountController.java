@@ -52,10 +52,18 @@ public class AccountController {
     }
 
     @ApiOperation(value = "List transaction by account number", response = Account.class)
-    @ApiResponses({@ApiResponse(code=200, message = "Success", response = Account.class)})
+    @ApiResponses({@ApiResponse(code=200, message = "Success", response = Account.class),
+    @ApiResponse(code=500, message = "Error")})
     @GetMapping("tecso/account/{accountNumber}")
-    public ResponseEntity<List<Account>> getTransactionByAcccount(@PathVariable("accountNumber") String accountNumber){
-        return ResponseEntity.ok().body(accountService.listAccount(accountNumber));
+    public ResponseEntity<Account> getTransactionByAcccount(@PathVariable("accountNumber") String accountNumber){
+        return ResponseEntity.ok().body(accountService.listAccountByAccountNumber(accountNumber));
+    }
+
+    @ApiOperation(value = "List all account", response = Account.class)
+    @ApiResponses({@ApiResponse(code=200, message = "Success", response = Account.class)})
+    @GetMapping("tecso/account")
+    public ResponseEntity<List<Account>> listAccount(){
+        return ResponseEntity.ok().body(accountService.listAccount());
     }
 
 
